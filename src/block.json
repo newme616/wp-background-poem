@@ -1,0 +1,103 @@
+{
+  "$schema": "https://schemas.wp.org/trunk/block.json",
+  "apiVersion": 3,
+  "name": "hero-landing-poem/hero-landing-poem",
+  "version": "0.1.0",
+  "title": "Hero Landing Poem",
+  "category": "widgets",
+  "icon": "edit-large",
+  "description": "A full-screen hero with a typewriter poem background and centered, block-based content.",
+  "supports": {
+    "html": false,
+    "align": ["full"]
+  },
+  "attributes": {
+    "background_text": {
+      "type": "string"
+    },
+    "background_text_size": {
+      "type": "string"
+    },
+    "background_font_family": {
+      "type": "string"
+    },
+    "background_font_weight": {
+      "type": "string"
+    },
+    "background_font_style": {
+      "type": "string",
+      "default": "normal"
+    },
+    "background_line_height": {
+      "type": "number"
+    },
+    "background_letter_spacing": {
+      "type": "number"
+    },
+    "background_color": {
+      "type": "string"
+    },
+    "background_opacity": {
+      "type": "number"
+    },
+    "background_blur": {
+      "type": "number",
+      "default": 0
+    },
+    "blur_animation_duration": {
+      "type": "number",
+      "default": 3000
+    },
+    "enable_blur_animation": {
+      "type": "boolean",
+      "default": false
+    },
+    "auto_fit_text": {
+      "type": "boolean",
+      "default": true
+    },
+    "content_font_size": {
+      "type": "string"
+    },
+    "content_color": {
+      "type": "string"
+    },
+    "content_position_vertical": {
+      "type": "string",
+      "default": "center"
+    },
+    "content_position_horizontal": {
+      "type": "string",
+      "default": "center"
+    },
+    "content_align": {
+      "type": "string",
+      "default": "center"
+    },
+    "typing_speed": {
+      "type": "number",
+      "default": 90
+    },
+    "start_delay": {
+      "type": "number",
+      "default": 0
+    },
+    "text_align": {
+      "type": "string",
+      "default": "top-left"
+    },
+    "text_position_vertical": {
+      "type": "string",
+      "default": "flex-start"
+    },
+    "text_position_horizontal": {
+      "type": "string",
+      "default": "flex-start"
+    }
+  },
+  "textdomain": "hero-landing-poem",
+  "editorScript": "file:./index.js",
+  "editorStyle": "file:./index.css",
+  "style": "file:./style-index.css",
+  "render": "file:../hero-landing-poem.php"
+}
