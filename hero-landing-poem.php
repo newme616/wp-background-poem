@@ -147,14 +147,14 @@ function render_hero_landing_poem_block($attributes, $content) {
         $content_style .= 'color:' . esc_attr($attributes['content_color']) . ';';
     }
     
-    // Add content positioning styles
-    if (!empty($attributes['content_position_vertical'])) {
+    // Add content positioning styles - only if explicitly set to non-default values
+    if (!empty($attributes['content_position_vertical']) && $attributes['content_position_vertical'] !== 'center') {
         $content_style .= 'align-items:' . esc_attr($attributes['content_position_vertical']) . ';';
     }
-    if (!empty($attributes['content_position_horizontal'])) {
+    if (!empty($attributes['content_position_horizontal']) && $attributes['content_position_horizontal'] !== 'center') {
         $content_style .= 'justify-content:' . esc_attr($attributes['content_position_horizontal']) . ';';
     }
-    if (!empty($attributes['content_align'])) {
+    if (!empty($attributes['content_align']) && $attributes['content_align'] !== 'center') {
         $align_value = in_array($attributes['content_align'], ['top-left', 'center-left', 'bottom-left']) ? 'left' :
                       (in_array($attributes['content_align'], ['top-center', 'center', 'bottom-center']) ? 'center' : 'right');
         $content_style .= 'text-align:' . $align_value . ';';
