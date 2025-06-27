@@ -1,10 +1,6 @@
-import { useBlockProps, InnerBlocks } from "@wordpress/block-editor";
+import { useBlockProps } from "@wordpress/block-editor";
 
 export default function save({ attributes }) {
-  const blockProps = useBlockProps.save();
-  return (
-    <div {...blockProps}>
-      <InnerBlocks.Content />
-    </div>
-  );
+  // Rendering is now fully handled by PHP, so this function returns null.
+  return null;
 }

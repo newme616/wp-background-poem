@@ -1,5 +1,5 @@
 import { __ } from "@wordpress/i18n";
-import { useBlockProps, InnerBlocks, InspectorControls, ColorPalette } from "@wordpress/block-editor";
+import { useBlockProps, InspectorControls, ColorPalette } from "@wordpress/block-editor";
 import {
   PanelBody,
   TextControl,
@@ -24,11 +24,6 @@ export default function Edit({ attributes, setAttributes }) {
     background_color,
     background_opacity,
     auto_fit_text,
-    content_font_size,
-    content_color,
-    content_position_vertical,
-    content_position_horizontal,
-    content_align,
   } = attributes;
 
   return (
@@ -190,55 +185,43 @@ export default function Edit({ attributes, setAttributes }) {
             }}
           />
         </PanelBody>
-        <PanelBody title={__("Content Settings", "hero-landing-poem")}>
+        <PanelBody title={__("Background Settings", "hero-landing-poem")}>
           <TextControl
-            label={__("Content Font Size", "hero-landing-poem")}
-            value={content_font_size}
-            onChange={(val) => setAttributes({ content_font_size: val })}
-            help={__("Sets a base font size for the content. Can be overridden by individual blocks.")}
+            label={__("Background Image URL", "hero-landing-poem")}
+            value={attributes.background_image_url}
+            onChange={(val) => setAttributes({ background_image_url: val })}
+            help={__("Enter a URL for the background image. Leave empty for no background image.")}
           />
-          <p>{__("Content Color", "hero-landing-poem")}</p>
-          <ColorPalette value={content_color} onChange={(val) => setAttributes({ content_color: val })} />
-          <SelectControl
-            label={__("Content Position", "hero-landing-poem")}
-            value={content_align}
-            options={[
-              { label: "Top Left", value: "top-left" },
-              { label: "Top Center", value: "top-center" },
-              { label: "Top Right", value: "top-right" },
-              { label: "Center Left", value: "center-left" },
-              { label: "Center", value: "center" },
-              { label: "Center Right", value: "center-right" },
-              { label: "Bottom Left", value: "bottom-left" },
-              { label: "Bottom Center", value: "bottom-center" },
-              { label: "Bottom Right", value: "bottom-right" },
-            ]}
-            onChange={(val) => {
-              const positions = {
-                "top-left": { vertical: "flex-start", horizontal: "flex-start", align: "left" },
-                "top-center": { vertical: "flex-start", horizontal: "center", align: "center" },
-                "top-right": { vertical: "flex-start", horizontal: "flex-end", align: "right" },
-                "center-left": { vertical: "center", horizontal: "flex-start", align: "left" },
-                center: { vertical: "center", horizontal: "center", align: "center" },
-                "center-right": { vertical: "center", horizontal: "flex-end", align: "right" },
-                "bottom-left": { vertical: "flex-end", horizontal: "flex-start", align: "left" },
-                "bottom-center": { vertical: "flex-end", horizontal: "center", align: "center" },
-                "bottom-right": { vertical: "flex-end", horizontal: "flex-end", align: "right" },
-              };
-              const position = positions[val];
-              setAttributes({
-                content_align: val,
-                content_position_vertical: position.vertical,
-                content_position_horizontal: position.horizontal,
-              });
-            }}
+          <p>{__("Container Background Color", "hero-landing-poem")}</p>
+          <ColorPalette
+            value={attributes.container_background_color}
+            onChange={(val) => setAttributes({ container_background_color: val })}
+          />
+        </PanelBody>
+        <PanelBody title={__("Animation Settings", "hero-landing-poem")}>
+          <RangeControl
+            label={__("Arrow Fade-In Delay (ms)", "hero-landing-poem")}
+            value={attributes.arrow_fade_in_delay}
+            onChange={(val) => setAttributes({ arrow_fade_in_delay: val })}
+            min={0}
+            max={15000}
+            step={100}
+            help={__("Time to wait before the scroll-down arrow fades in.", "hero-landing-poem")}
+          />
+          <TextControl
+            label={__("Arrow Bottom Spacing", "hero-landing-poem")}
+            value={attributes.arrow_bottom_spacing}
+            onChange={(val) => setAttributes({ arrow_bottom_spacing: val })}
+            help={__("CSS value for the space from the bottom (e.g., '3rem', '50px').", "hero-landing-poem")}
           />
         </PanelBody>
       </InspectorControls>
       <div {...blockProps}>
         <div className="hero-landing-poem-content-editor">
-          <p className="editor-info-text">Hero Background Poem (from settings)</p>
-          <InnerBlocks />
+          <p className="editor-info-text">Hero Background Poem</p>
+          <p className="editor-info-text">
+            <i>(No inner content. A scroll-down arrow will be shown on the live site.)</i>
+          </p>
         </div>
       </div>
     </>

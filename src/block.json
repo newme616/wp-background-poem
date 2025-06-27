@@ -37,6 +37,12 @@
     "background_color": {
       "type": "string"
     },
+    "background_image_url": {
+      "type": "string"
+    },
+    "container_background_color": {
+      "type": "string"
+    },
     "background_opacity": {
       "type": "number",
       "default": 0.4
@@ -57,24 +63,6 @@
       "type": "boolean",
       "default": false
     },
-    "content_font_size": {
-      "type": "string"
-    },
-    "content_color": {
-      "type": "string"
-    },
-    "content_position_vertical": {
-      "type": "string",
-      "default": "center"
-    },
-    "content_position_horizontal": {
-      "type": "string",
-      "default": "center"
-    },
-    "content_align": {
-      "type": "string",
-      "default": "center"
-    },
     "typing_speed": {
       "type": "number",
       "default": 50
@@ -94,6 +82,14 @@
     "text_position_horizontal": {
       "type": "string",
       "default": "flex-start"
+    },
+    "arrow_fade_in_delay": {
+      "type": "number",
+      "default": 300
+    },
+    "arrow_bottom_spacing": {
+      "type": "string",
+      "default": "3rem"
     }
   },
   "textdomain": "hero-landing-poem",
