@@ -116,12 +116,12 @@ export default function Edit({ attributes, setAttributes }) {
             step={0.01}
           />
           <RangeControl
-            label={__("Background Blur (px)", "hero-landing-poem")}
+            label={__("Poem Text Blur (px)", "hero-landing-poem")}
             value={attributes.background_blur}
             onChange={(val) => setAttributes({ background_blur: val })}
             min={0}
             max={20}
-            step={0.5}
+            step={0.1}
           />
           <ToggleControl
             label={__("Animate Blur Effect", "hero-landing-poem")}

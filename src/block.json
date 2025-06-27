@@ -38,7 +38,8 @@
       "type": "string"
     },
     "background_opacity": {
-      "type": "number"
+      "type": "number",
+      "default": 0.4
     },
     "background_blur": {
       "type": "number",
@@ -54,7 +55,7 @@
     },
     "auto_fit_text": {
       "type": "boolean",
-      "default": true
+      "default": false
     },
     "content_font_size": {
       "type": "string"
@@ -76,11 +77,11 @@
     },
     "typing_speed": {
       "type": "number",
-      "default": 90
+      "default": 50
     },
     "start_delay": {
       "type": "number",
-      "default": 0
+      "default": 1000
     },
     "text_align": {
       "type": "string",

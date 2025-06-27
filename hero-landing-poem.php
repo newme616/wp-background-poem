@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Hero Landing Poem
- * Plugin URI: https://example.com
+ * Plugin URI: https://matthiasneumayer.com
  * Description: Shortcode [hero_landing_poem] for a full-screen hero with a typewriter poem background and centered text. Supports background image, custom colors, typing speed.
  * Version: 3.0.0
  * Author: Matthias Neumayer
@@ -59,62 +59,82 @@ function render_hero_landing_poem_block($attributes, $content) {
     $options = get_option('hero_landing_poem_settings');
     
     // Fallback values from global settings
-    $default_text = $options['text'] ?? 'Kurz nach acht Uhr verlor ich den Verstand...';
-    $default_bg_size = $options['background_text_size'] ?? 'clamp(1.5rem, 3vw, 3rem)';
-    // Note: color, opacity, and other style fallbacks will be handled via CSS or inline defaults
+    $default_text = $options['text'] ?? 'Kurz nach acht Uhr verlor ich den Verstand.
+Ich saß im Garten und schrieb, 
+als plötzlich die Wörter begannen
+zu flüstern und zu tanzen,
+sich von der Seite zu lösen.
+
+Es war ein Samstagabend und ich
+war auf einer Party.
+Film war der Grund,
+glaub ich.
+
+The words were dancing now,
+moving across the page
+like shadows in candlelight,
+each letter finding its way home.';
+    $default_bg_size = $options['background_text_size'] ?? '14px';
     
     // Get values from attributes, with fallbacks to defaults
     $background_text = $attributes['background_text'] ?? $default_text;
     $auto_fit_text = $attributes['auto_fit_text'] ?? true;
 
-    // Build the style string
-    $style = '';
-    
-    if (!$auto_fit_text) {
-        $font_size = $attributes['background_text_size'] ?? $default_bg_size;
-        $style .= 'font-size:' . esc_attr($font_size) . ';';
+    // Build the style string for the main container (background image/color)
+    $container_style = '';
+    if (!empty($attributes['background_image_url'])) {
+        $container_style .= 'background-image: url(' . esc_url($attributes['background_image_url']) . ');';
     }
-    if (!empty($attributes['background_font_family'])) {
-        $style .= 'font-family:' . esc_attr($attributes['background_font_family']) . ';';
-    }
-    if (!empty($attributes['background_font_weight'])) {
-        $style .= 'font-weight:' . esc_attr($attributes['background_font_weight']) . ';';
-    }
-    if (!empty($attributes['background_font_style'])) {
-        $style .= 'font-style:' . esc_attr($attributes['background_font_style']) . ';';
-    }
-    if (isset($attributes['background_line_height'])) {
-        $style .= 'line-height:' . esc_attr($attributes['background_line_height']) . ';';
-    }
-    if (isset($attributes['background_letter_spacing'])) {
-        $style .= 'letter-spacing:' . esc_attr($attributes['background_letter_spacing']) . 'px;';
-    }
-    if (!empty($attributes['background_color'])) {
-        $style .= 'color:' . esc_attr($attributes['background_color']) . ';';
-    }
-     if (isset($attributes['background_opacity'])) {
-        $style .= 'opacity:' . esc_attr($attributes['background_opacity']) . ';';
-    }
-    if (isset($attributes['background_blur']) && $attributes['background_blur'] > 0) {
-        if (!empty($attributes['enable_blur_animation']) && $attributes['enable_blur_animation']) {
-            // Don't apply blur initially - it will be animated by JavaScript
-            $style .= 'filter:blur(0px);';
-        } else {
-            $style .= 'filter:blur(' . esc_attr($attributes['background_blur']) . 'px);';
-        }
+    if (!empty($attributes['container_background_color'])) {
+        $container_style .= 'background-color:' . esc_attr($attributes['container_background_color']) . ';';
     }
 
-    // Add positioning styles
+    $output = '<div class="hero-landing-poem-container" style="' . $container_style . '">';
+
+    // Build the style string for the background text container (.hero-landing-poem-bg)
+    $bg_style = '';
     if (!empty($attributes['text_position_vertical'])) {
-        $style .= 'align-items:' . esc_attr($attributes['text_position_vertical']) . ';';
+        $bg_style .= 'align-items:' . esc_attr($attributes['text_position_vertical']) . ';';
     }
     if (!empty($attributes['text_position_horizontal'])) {
-        $style .= 'justify-content:' . esc_attr($attributes['text_position_horizontal']) . ';';
+        $bg_style .= 'justify-content:' . esc_attr($attributes['text_position_horizontal']) . ';';
     }
     if (!empty($attributes['text_align'])) {
         $align_value = in_array($attributes['text_align'], ['top-left', 'center-left', 'bottom-left']) ? 'left' :
                       (in_array($attributes['text_align'], ['top-center', 'center', 'bottom-center']) ? 'center' : 'right');
-        $style .= 'text-align:' . $align_value . ';';
+        $bg_style .= 'text-align:' . $align_value . ';';
+    }
+    if (isset($attributes['background_opacity'])) {
+        $bg_style .= 'opacity:' . esc_attr($attributes['background_opacity']) . ';';
+    }
+
+    // Build the style string for the poem text itself (.hero-poem-blur-container)
+    $poem_style = '';
+    if (!$auto_fit_text) {
+        $poem_style .= 'font-size:' . ($attributes['background_text_size'] ?? $default_bg_size) . ';';
+    }
+    if (!empty($attributes['background_font_family'])) {
+        $poem_style .= 'font-family:' . esc_attr($attributes['background_font_family']) . ';';
+    }
+    if (!empty($attributes['background_font_weight'])) {
+        $poem_style .= 'font-weight:' . esc_attr($attributes['background_font_weight']) . ';';
+    }
+    if (!empty($attributes['background_font_style'])) {
+        $poem_style .= 'font-style:' . esc_attr($attributes['background_font_style']) . ';';
+    }
+    if (isset($attributes['background_line_height'])) {
+        $poem_style .= 'line-height:' . esc_attr($attributes['background_line_height']) . ';';
+    }
+    if (isset($attributes['background_letter_spacing'])) {
+        $poem_style .= 'letter-spacing:' . esc_attr($attributes['background_letter_spacing']) . 'px;';
+    }
+    if (!empty($attributes['background_color'])) {
+        $poem_style .= 'color:' . esc_attr($attributes['background_color']) . ';';
+    }
+    if (isset($attributes['background_blur']) && $attributes['background_blur'] > 0) {
+        if (empty($attributes['enable_blur_animation'])) {
+            $poem_style .= 'filter:blur(' . esc_attr($attributes['background_blur']) . 'px);';
+        }
     }
 
     $container_attrs = $auto_fit_text ? ' data-auto-fit-text="true"' : '';
@@ -127,17 +147,14 @@ function render_hero_landing_poem_block($attributes, $content) {
         $typewriter_attrs .= ' data-start-delay="' . esc_attr($attributes['start_delay']) . '"';
     }
 
-    $output = '<div class="hero-landing-poem-container"' . $container_attrs . '>';
-    
-    // Add blur animation attributes to background element
-    $bg_attrs = '';
-    if (!empty($attributes['enable_blur_animation']) && $attributes['enable_blur_animation']) {
-        $bg_attrs .= ' data-blur-animation="true"';
-        $bg_attrs .= ' data-blur-target="' . esc_attr($attributes['background_blur']) . '"';
-        $bg_attrs .= ' data-blur-duration="' . esc_attr($attributes['blur_animation_duration']) . '"';
+    $poem_attrs = '';
+    if (!empty($attributes['enable_blur_animation']) && $attributes['background_blur'] > 0) {
+        $poem_attrs .= ' data-blur-animation="true"';
+        $poem_attrs .= ' data-blur-target="' . esc_attr($attributes['background_blur']) . '"';
+        $poem_attrs .= ' data-blur-duration="' . esc_attr($attributes['blur_animation_duration']) . '"';
     }
     
-    $output .= '<div class="hero-landing-poem-bg"' . $bg_attrs . ' style="' . $style . '"><span class="hero-typewriter-target" ' . $typewriter_attrs . '></span></div>';
+    $output .= '<div class="hero-landing-poem-bg"' . $container_attrs . ' style="' . $bg_style . '"><div class="hero-poem-blur-container"' . $poem_attrs . ' style="' . $poem_style . '"><span class="hero-typewriter-target" ' . $typewriter_attrs . '></span></div></div>';
     
     $content_style = '';
     if (!empty($attributes['content_font_size'])) {
@@ -147,14 +164,14 @@ function render_hero_landing_poem_block($attributes, $content) {
         $content_style .= 'color:' . esc_attr($attributes['content_color']) . ';';
     }
     
-    // Add content positioning styles - only if explicitly set to non-default values
-    if (!empty($attributes['content_position_vertical']) && $attributes['content_position_vertical'] !== 'center') {
+    // Add content positioning styles
+    if (!empty($attributes['content_position_vertical'])) {
         $content_style .= 'align-items:' . esc_attr($attributes['content_position_vertical']) . ';';
     }
-    if (!empty($attributes['content_position_horizontal']) && $attributes['content_position_horizontal'] !== 'center') {
+    if (!empty($attributes['content_position_horizontal'])) {
         $content_style .= 'justify-content:' . esc_attr($attributes['content_position_horizontal']) . ';';
     }
-    if (!empty($attributes['content_align']) && $attributes['content_align'] !== 'center') {
+    if (!empty($attributes['content_align'])) {
         $align_value = in_array($attributes['content_align'], ['top-left', 'center-left', 'bottom-left']) ? 'left' :
                       (in_array($attributes['content_align'], ['top-center', 'center', 'bottom-center']) ? 'center' : 'right');
         $content_style .= 'text-align:' . $align_value . ';';
@@ -220,6 +237,68 @@ function hero_landing_poem_register_settings() {
             $value = $options['background_text_size'] ?? 'clamp(1.5rem, 3vw, 3rem)';
             echo '<input type="text" name="hero_landing_poem_settings[background_text_size]" value="' . esc_attr($value) . '" />';
             echo '<p class="description">CSS font-size value for the background text (e.g., clamp(1.5rem, 3vw, 3rem)).</p>';
+        },
+        'hero-landing-poem-settings',
+        'hero_landing_poem_main'
+    );
+
+    // Add more settings fields as needed for other attributes
+    add_settings_field(
+        'hero_landing_poem_background_font_family',
+        'Background Font Family',
+        function() {
+            $options = get_option('hero_landing_poem_settings');
+            $value = $options['background_font_family'] ?? '';
+            echo '<input type="text" name="hero_landing_poem_settings[background_font_family]" value="' . esc_attr($value) . '" />';
+            echo '<p class="description">CSS font-family for the background text (e.g., Georgia, serif).</p>';
+        },
+        'hero-landing-poem-settings',
+        'hero_landing_poem_main'
+    );
+    add_settings_field(
+        'hero_landing_poem_background_font_weight',
+        'Background Font Weight',
+        function() {
+            $options = get_option('hero_landing_poem_settings');
+            $value = $options['background_font_weight'] ?? '';
+            echo '<input type="text" name="hero_landing_poem_settings[background_font_weight]" value="' . esc_attr($value) . '" />';
+            echo '<p class="description">CSS font-weight for the background text (e.g., 400, bold).</p>';
+        },
+        'hero-landing-poem-settings',
+        'hero_landing_poem_main'
+    );
+    add_settings_field(
+        'hero_landing_poem_background_font_style',
+        'Background Font Style',
+        function() {
+            $options = get_option('hero_landing_poem_settings');
+            $value = $options['background_font_style'] ?? '';
+            echo '<input type="text" name="hero_landing_poem_settings[background_font_style]" value="' . esc_attr($value) . '" />';
+            echo '<p class="description">CSS font-style for the background text (e.g., normal, italic).</p>';
+        },
+        'hero-landing-poem-settings',
+        'hero_landing_poem_main'
+    );
+    add_settings_field(
+        'hero_landing_poem_background_line_height',
+        'Background Line Height',
+        function() {
+            $options = get_option('hero_landing_poem_settings');
+            $value = $options['background_line_height'] ?? '';
+            echo '<input type="text" name="hero_landing_poem_settings[background_line_height]" value="' . esc_attr($value) . '" />';
+            echo '<p class="description">CSS line-height for the background text (e.g., 1.5).</p>';
+        },
+        'hero-landing-poem-settings',
+        'hero_landing_poem_main'
+    );
+    add_settings_field(
+        'hero_landing_poem_background_letter_spacing',
+        'Background Letter Spacing',
+        function() {
+            $options = get_option('hero_landing_poem_settings');
+            $value = $options['background_letter_spacing'] ?? '';
+            echo '<input type="text" name="hero_landing_poem_settings[background_letter_spacing]" value="' . esc_attr($value) . '" />';
+            echo '<p class="description">CSS letter-spacing for the background text (e.g., 0.1).</p>';
         },
         'hero-landing-poem-settings',
         'hero_landing_poem_main'
