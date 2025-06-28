@@ -63,26 +63,6 @@ function hero_landing_poem_enqueue_assets() {
         );
     }
 
-    if (file_exists($plugin_path . 'js/autofit.js')) {
-        wp_enqueue_script(
-            'hero-landing-poem-autofit',
-            $plugin_url . 'js/autofit.js',
-            ['hero-landing-poem-typewriter'], // Depends on typewriter
-            $plugin_version,
-            true
-        );
-    }
-
-    if (file_exists($plugin_path . 'js/blur-animation.js')) {
-        wp_enqueue_script(
-            'hero-landing-poem-blur-animation',
-            $plugin_url . 'js/blur-animation.js',
-            [],
-            $plugin_version,
-            true
-        );
-    }
-
     if (file_exists($plugin_path . 'js/scroll-arrow.js')) {
         wp_enqueue_script(
             'hero-landing-poem-scroll-arrow',
@@ -93,6 +73,15 @@ function hero_landing_poem_enqueue_assets() {
         );
     }
     
+    if (file_exists($plugin_path . 'js/opacity-animation.js')) {
+        wp_enqueue_script(
+            'hero-landing-poem-opacity-animation',
+            $plugin_url . 'js/opacity-animation.js',
+            [],
+            $plugin_version,
+            true
+        );
+    }
 }
 add_action('wp_enqueue_scripts', 'hero_landing_poem_enqueue_assets');
 
@@ -121,8 +110,7 @@ each letter finding its way home.';
     
     // Get values from attributes, with fallbacks to defaults
     $background_text = $attributes['background_text'] ?? $default_text;
-    $auto_fit_text = $attributes['auto_fit_text'] ?? false;
-
+    
     // Build the style string for the main container (background image/color)
     $container_style = '';
     if (!empty($attributes['background_image_url']) && filter_var($attributes['background_image_url'], FILTER_VALIDATE_URL)) {
@@ -163,15 +151,13 @@ each letter finding its way home.';
     }
     
     // Handle font size - only apply if auto-fit is disabled
-    if (!$auto_fit_text && !empty($attributes['background_text_size'])) {
+    if (!empty($attributes['background_text_size'])) {
         // Validate CSS font-size value
         if (preg_match('/^[0-9.]+(?:px|em|rem|%|vw|vh)$|^clamp\(.+\)$/', $attributes['background_text_size'])) {
             $poem_style .= 'font-size:' . esc_attr($attributes['background_text_size']) . ';';
         } else {
             $poem_style .= 'font-size:' . esc_attr($default_bg_size) . ';';
         }
-    } elseif (!$auto_fit_text) {
-        $poem_style .= 'font-size:' . esc_attr($default_bg_size) . ';';
     }
     if (!empty($attributes['background_font_family'])) {
         $poem_style .= 'font-family:' . esc_attr($attributes['background_font_family']) . ';';
@@ -191,17 +177,12 @@ each letter finding its way home.';
     if (!empty($attributes['background_color']) && preg_match('/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/', $attributes['background_color'])) {
         $poem_style .= 'color:' . esc_attr($attributes['background_color']) . ';';
     }
-    if (isset($attributes['background_opacity']) && is_numeric($attributes['background_opacity']) && $attributes['background_opacity'] >= 0 && $attributes['background_opacity'] <= 1) {
+    // Only set opacity directly if animation is disabled
+    if (empty($attributes['enable_opacity_animation']) && isset($attributes['background_opacity']) && is_numeric($attributes['background_opacity']) && $attributes['background_opacity'] >= 0 && $attributes['background_opacity'] <= 1) {
         $poem_style .= 'opacity:' . esc_attr($attributes['background_opacity']) . ';';
     }
-    if (isset($attributes['background_blur']) && is_numeric($attributes['background_blur']) && $attributes['background_blur'] >= 0) {
-        if (empty($attributes['enable_blur_animation'])) {
-            $poem_style .= 'filter:blur(' . esc_attr(min($attributes['background_blur'], 50)) . 'px);'; // Cap at 50px
-        }
-    }
+    // Note: When animation is enabled, opacity will be set by JavaScript starting from 1
 
-    $container_attrs = $auto_fit_text ? ' data-auto-fit-text="true"' : '';
-    
     $typewriter_attrs = 'data-text="' . esc_attr($background_text) . '"';
     if (isset($attributes['typing_speed']) && is_numeric($attributes['typing_speed']) && $attributes['typing_speed'] > 0) {
         $typewriter_attrs .= ' data-typing-speed="' . esc_attr(max(10, min($attributes['typing_speed'], 1000))) . '"'; // Bounds: 10-1000ms
@@ -211,15 +192,16 @@ each letter finding its way home.';
     }
 
     $poem_attrs = '';
-    if (!empty($attributes['enable_blur_animation']) && isset($attributes['background_blur']) && $attributes['background_blur'] > 0) {
-        $poem_attrs .= ' data-blur-animation="true"';
-        $poem_attrs .= ' data-blur-target="' . esc_attr(min($attributes['background_blur'], 50)) . '"'; // Cap at 50px
-        if (isset($attributes['blur_animation_duration']) && is_numeric($attributes['blur_animation_duration'])) {
-            $poem_attrs .= ' data-blur-duration="' . esc_attr(max(500, min($attributes['blur_animation_duration'], 30000))) . '"'; // Bounds: 0.5-30s
+    if (!empty($attributes['enable_opacity_animation'])) {
+        $poem_attrs .= ' data-opacity-animation="true"';
+        $target_opacity = (isset($attributes['background_opacity']) && is_numeric($attributes['background_opacity'])) ? $attributes['background_opacity'] : 0.4;
+        $poem_attrs .= ' data-opacity-target="' . esc_attr($target_opacity) . '"';
+        if (isset($attributes['opacity_animation_duration']) && is_numeric($attributes['opacity_animation_duration'])) {
+            $poem_attrs .= ' data-opacity-duration="' . esc_attr(max(500, min($attributes['opacity_animation_duration'], 30000))) . '"'; // Bounds: 0.5-30s
         }
     }
     
-    $output .= '<div class="hero-landing-poem-bg"' . $container_attrs . ' style="' . $bg_style . '"><div class="hero-poem-blur-container"' . $poem_attrs . ' style="' . $poem_style . '"><span class="hero-typewriter-target" ' . $typewriter_attrs . '></span></div></div>';
+    $output .= '<div class="hero-landing-poem-bg" style="' . $bg_style . '"><div class="hero-poem-blur-container"' . $poem_attrs . ' style="' . $poem_style . '"><span class="hero-typewriter-target" ' . $typewriter_attrs . '></span></div></div>';
     
     // Add scroll-down arrow
     $arrow_styles = [];

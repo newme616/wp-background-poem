@@ -47,21 +47,13 @@
       "type": "number",
       "default": 0.4
     },
-    "background_blur": {
-      "type": "number",
-      "default": 0
+    "enable_opacity_animation": {
+      "type": "boolean",
+      "default": false
     },
-    "blur_animation_duration": {
+    "opacity_animation_duration": {
       "type": "number",
       "default": 3000
-    },
-    "enable_blur_animation": {
-      "type": "boolean",
-      "default": false
-    },
-    "auto_fit_text": {
-      "type": "boolean",
-      "default": false
     },
     "typing_speed": {
       "type": "number",

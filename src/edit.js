@@ -23,7 +23,6 @@ export default function Edit({ attributes, setAttributes }) {
     background_letter_spacing,
     background_color,
     background_opacity,
-    auto_fit_text,
   } = attributes;
 
   return (
@@ -36,20 +35,12 @@ export default function Edit({ attributes, setAttributes }) {
             onChange={(val) => setAttributes({ background_text: val })}
             help={__("Leave empty to use the text from the global settings.", "hero-landing-poem")}
           />
-          <ToggleControl
-            label={__("Auto-fit Background Text", "hero-landing-poem")}
-            checked={auto_fit_text}
-            onChange={(isChecked) => setAttributes({ auto_fit_text: isChecked })}
-            help={__("Automatically adjust font size to fit the container.", "hero-landing-poem")}
+          <TextControl
+            label={__("Background Font Size", "hero-landing-poem")}
+            value={background_text_size}
+            onChange={(val) => setAttributes({ background_text_size: val })}
+            help={__("e.g., clamp(1.5rem, 3vw, 3rem). Leave empty to use default.", "hero-landing-poem")}
           />
-          {!auto_fit_text && (
-            <TextControl
-              label={__("Background Font Size", "hero-landing-poem")}
-              value={background_text_size}
-              onChange={(val) => setAttributes({ background_text_size: val })}
-              help={__("e.g., clamp(1.5rem, 3vw, 3rem). Leave empty to use default.", "hero-landing-poem")}
-            />
-          )}
           <TextControl
             label={__("Font Family", "hero-landing-poem")}
             value={background_font_family}
@@ -110,28 +101,20 @@ export default function Edit({ attributes, setAttributes }) {
             max={1}
             step={0.01}
           />
-          <RangeControl
-            label={__("Poem Text Blur (px)", "hero-landing-poem")}
-            value={attributes.background_blur}
-            onChange={(val) => setAttributes({ background_blur: val })}
-            min={0}
-            max={20}
-            step={0.1}
-          />
           <ToggleControl
-            label={__("Animate Blur Effect", "hero-landing-poem")}
-            checked={attributes.enable_blur_animation}
-            onChange={(isChecked) => setAttributes({ enable_blur_animation: isChecked })}
-            help={__("Gradually increase blur from 0 to the set value over time.")}
+            label={__("Animate Opacity", "hero-landing-poem")}
+            checked={attributes.enable_opacity_animation}
+            onChange={(isChecked) => setAttributes({ enable_opacity_animation: isChecked })}
+            help={__("Animate the poem's opacity from 0 to the set value.", "hero-landing-poem")}
           />
-          {attributes.enable_blur_animation && (
+          {attributes.enable_opacity_animation && (
             <RangeControl
-              label={__("Blur Animation Duration (ms)", "hero-landing-poem")}
-              value={attributes.blur_animation_duration}
-              onChange={(val) => setAttributes({ blur_animation_duration: val })}
-              min={1000}
+              label={__("Opacity Animation Duration (ms)", "hero-landing-poem")}
+              value={attributes.opacity_animation_duration}
+              onChange={(val) => setAttributes({ opacity_animation_duration: val })}
+              min={500}
               max={10000}
-              step={500}
+              step={100}
             />
           )}
           <RangeControl
